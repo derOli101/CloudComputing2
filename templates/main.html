@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Fitness App</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <h1>Willkommen, {{ user }}!</h1>
+    <a href="{{ url_for('logout') }}">Logout</a>
+
+    <div style="display: flex; gap: 20px; margin-top: 20px">
+      <!-- Linke Seite -->
+      <div style="flex: 1">
+        <h2>Körperzusammensetzung eingeben</h2>
+        <form method="POST">
+          <label>Größe (cm):</label>
+          <input
+            type="number"
+            name="height"
+            placeholder="Größe"
+            value="{{ height or '' }}"
+          />
+
+          <label>Gewicht (kg):</label>
+          <input type="number" name="weight" placeholder="Gewicht" required />
+
+          <label>Körperfett (%):</label>
+          <input
+            type="number"
+            name="fat_percentage"
+            placeholder="Körperfett"
+            required
+          />
+
+          <label>Datum:</label>
+          <input type="date" name="date" value="{{ today }}" required />
+
+          <button type="submit">Speichern</button>
+        </form>
+
+        <h2>Gespeicherte Daten</h2>
+        <ul>
+          {% for entry in body_compositions %} {% if entry.name == user %}
+          <li>
+            {{ entry.date }} – {{ entry.weight }} kg, {{ entry.height }} cm, {{
+            entry.fat_percentage }}% Körperfett
+          </li>
+          {% endif %} {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Rechte Seite -->
+      <div style="flex: 1">
+        <h2>KI-gestützes Trainingsprogramm</h2>
+        <form method="POST" action="{{ url_for('fitness_tip') }}">
+          <button type="submit">Programm generieren</button>
+        </form>
+
+        {% if fitness_tip %}
+        <div
+          style="
+            margin-top: 15px;
+            padding: 10px;
+            background: #eef;
+            border-radius: 5px;
+          "
+        >
+          <strong>Training:</strong><br />
+          {{ fitness_tip }}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>
